@@ -17,6 +17,12 @@ class Controlador {
     res.json(eventos);
   };
 
+  obtenerClima = async (req, res) => {
+    const { id } = req.params;
+    const clima = await this.servicio.obtenerClima(id);
+    res.json(clima);
+  };
+
   guardarEvento = async (req, res) => {
     const evento = req.body;
     const eventoGuardado = await this.servicio.guardarEvento(evento);

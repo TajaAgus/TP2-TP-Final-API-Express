@@ -11,8 +11,14 @@ class Servicio {
   };
 
   obtenerEvento = async (id) => {
-    const eventos = await this.model.obtenerEventos(id);
-    return eventos;
+    const evento = await this.model.obtenerEventos(id);
+    return evento;
+  };
+
+  obtenerClima = async (id) => {
+    const evento = await this.model.obtenerEventos(id);
+    // ACA VA LA INTEGRACION CON LA API DE CLIMA
+    return evento;
   };
 
   guardarEvento = async (evento) => {
