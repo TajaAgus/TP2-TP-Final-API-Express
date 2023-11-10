@@ -1,4 +1,4 @@
-import ModelMongoDB from '../model/DAO/eventosMongoDB'
+import ModelMongoDB from '../model/DAO/eventosMongoDB.js'
 
 class Servicio {
   constructor() {
