@@ -2,6 +2,13 @@ import { ObjectId } from "mongodb"
 import CnxMongoDB from "../DBMongo.js"
 
 class ModelMongoDB {
+
+    obtenerEvento = async id => {   
+        if(!CnxMongoDB.connection) return {}
+        const evento = await CnxMongoDB.db.collection('eventos').findOne({_id: new ObjectId(id)})
+        return evento
+    }
+
     obtenerEventos = async categoria => {   
         if(!CnxMongoDB.connection) return []
 
@@ -15,10 +22,10 @@ class ModelMongoDB {
         }
     }
 
-    obtenerEvento = async id => {   
+    obtenerEventosUsuario = async id => {   
         if(!CnxMongoDB.connection) return {}
-        const evento = await CnxMongoDB.db.collection('eventos').findOne({_id: new ObjectId(id)})
-        return evento
+        const eventos = await CnxMongoDB.db.collection('eventos').find({ suscriptores: { $in: [new ObjectId(id)] } }).toArray()
+        return eventos || []
     }
 
     guardarEvento = async evento => {

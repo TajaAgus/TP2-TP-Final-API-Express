@@ -4,19 +4,25 @@ class Servicio {
   constructor() {
     this.model = ModelMongoDB;
   }
-
+  
+  obtenerEvento = async (id) => {
+    const evento = await this.model.obtenerEvento(id);
+    return evento;
+  };
+  
   obtenerEventos = async (categoria) => {
     const eventos = await this.model.obtenerEventos(categoria);
     return eventos;
   };
 
-  obtenerEvento = async (id) => {
-    const evento = await this.model.obtenerEventos(id);
-    return evento;
+
+  obtenerEventosUsuario = async (id) => {
+    const eventos = await this.model.obtenerEventosUsuario(id);
+    return eventos;
   };
 
   obtenerClima = async (id) => {
-    const evento = await this.model.obtenerEventos(id);
+    const evento = await this.model.obtenerEvento(id);
     // ACA VA LA INTEGRACION CON LA API DE CLIMA
     return evento;
   };

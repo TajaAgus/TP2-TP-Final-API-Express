@@ -10,10 +10,11 @@ class Router {
 
     start() {
         this.router.get('/', this.controlador.obtenerEventos)
-        this.router.get('/:id', this.controlador.obtenerEvento)
-        this.router.get('/clima/:id', this.controlador.obtenerClima)
         this.router.post('/', this.controlador.guardarEvento)
+        this.router.get('/:id', this.controlador.obtenerEvento)
+        this.router.get('/usuario/:id', this.controlador.obtenerEventosUsuario)
         this.router.put('/:id', this.controlador.actualizarEvento)
+        this.router.get('/clima/:id', this.controlador.obtenerClima)
         this.router.delete('/:id', this.controlador.borrarEvento)
 
         return this.router
