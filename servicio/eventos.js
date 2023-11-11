@@ -2,7 +2,7 @@ import ModelMongoDB from '../model/DAO/eventosMongoDB.js'
 
 class Servicio {
   constructor() {
-    this.model = ModelMongoDB;
+    this.model = new ModelMongoDB();
   }
   
   obtenerEvento = async (id) => {
