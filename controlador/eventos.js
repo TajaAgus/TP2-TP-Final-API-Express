@@ -13,7 +13,7 @@ class Controlador {
 
   obtenerEvento = async (req, res) => {
     const { id } = req.params;
-    const eventos = await this.servicio.obtenerEventos(id);
+    const eventos = await this.servicio.obtenerEvento(id);
     res.json(eventos);
   };
 
