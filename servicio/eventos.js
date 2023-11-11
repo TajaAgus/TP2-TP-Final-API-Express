@@ -1,4 +1,4 @@
-import ModelMongoDBEvento from '../model/DAO/eventosMongoDB.js'
+import ModelMongoDBEvento from "../model/DAO/eventosMongoDB.js";
 import ModelMongoDBUsuario from '../model/DAO/usuariosMongoDB.js'
 
 class Servicio {
@@ -6,17 +6,16 @@ class Servicio {
     this.modelEvento = new ModelMongoDBEvento();
     this.modelUsuario = new ModelMongoDBUsuario();
   }
-  
+
   obtenerEvento = async (id) => {
     const evento = await this.modelEvento.obtenerEvento(id);
     return evento;
   };
-  
+
   obtenerEventos = async (categoria) => {
     const eventos = await this.modelEvento.obtenerEventos(categoria);
     return eventos;
   };
-
 
   obtenerEventosUsuario = async (id) => {
     const eventos = await this.modelEvento.obtenerEventosUsuario(id);
@@ -24,9 +23,37 @@ class Servicio {
   };
 
   obtenerClima = async (id) => {
-    const evento = await this.modelEvento.obtenerEvento(id);
-    // ACA VA LA INTEGRACION CON LA API DE CLIMA
-    return evento;
+    try {
+      const evento = await this.model.obtenerEventos(id);
+
+      const ciudad = evento.ciudad;
+      const apiKey = "0194ea3482e0e589fe92a10f79156f66";
+
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&lang=sp,es&appid=${apiKey}&units=metric`;
+
+      const respuesta = await fetch(url);
+
+      if (!respuesta.ok) {
+        throw new Error(
+          `Error al obtener el clima. Código de estado: ${respuesta.status}`
+        );
+      }
+
+      const datosClima = await respuesta.json();
+
+      const temperatura = datosClima.main.temp;
+      const descripcion = datosClima.weather[0].description;
+
+      evento.clima = {
+        temperatura,
+        descripcion,
+      };
+
+      return evento;
+    } catch (error) {
+      console.error("Error en obtenerClima:", error.message);
+      throw error;
+    }
   };
 
   crearEvento = async (evento) => {
