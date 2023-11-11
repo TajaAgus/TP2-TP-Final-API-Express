@@ -24,7 +24,7 @@ class Servicio {
 
   obtenerClima = async (id) => {
     try {
-      const evento = await this.model.obtenerEventos(id);
+      const evento = await this.modelEvento.obtenerEvento(id);
 
       const ciudad = evento.ciudad;
       const apiKey = "0194ea3482e0e589fe92a10f79156f66";
