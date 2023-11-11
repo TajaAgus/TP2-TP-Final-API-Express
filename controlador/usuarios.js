@@ -6,15 +6,15 @@ class Controlador {
   }
 
   registrarUsuario = async (req, res) => {
-    const evento = req.body;
-    const eventoGuardado = await this.servicio.guardarEvento(evento);
-    res.json(eventoGuardado);
+    const usuario = req.body;
+    const usuarioGuardado = await this.servicio.registrarUsuario(usuario);
+    res.json(usuarioGuardado);
   };
 
   loginUsuario = async (req, res) => {
-    const evento = req.body;
-    const eventoGuardado = await this.servicio.guardarEvento(evento);
-    res.json(eventoGuardado);
+    const usuario = req.body;
+    const usuarioLogueado = await this.servicio.loginUsuario(usuario);
+    res.json(usuarioLogueado);
   };
 }
 

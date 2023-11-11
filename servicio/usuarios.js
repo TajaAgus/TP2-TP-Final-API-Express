@@ -1,33 +1,40 @@
-import ModelMongoDB from '../model/DAO/usuariosMongoDB.js'
+import ModelMongoDB from "../model/DAO/usuariosMongoDB.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 class Servicio {
   constructor() {
-    this.model = ModelMongoDB;
+    this.model = new ModelMongoDB();
   }
 
-  obtenerEventos = async (categoria) => {
-    const eventos = await this.model.obtenerEventos(categoria);
-    return eventos;
+  registrarUsuario = async (usuario) => {
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(usuario.password, salt);
+    usuario.password = password;
+    const usuarioGuardado = await this.model.registrarUsuario(usuario);
+    return usuarioGuardado;
   };
 
-  obtenerEvento = async (id) => {
-    const eventos = await this.model.obtenerEventos(id);
-    return eventos;
-  };
-
-  guardarEvento = async (evento) => {
-    const eventoGuardado = await this.model.guardarEvento(evento);
-    return eventoGuardado;
-  };
-
-  actualizarEvento = async (id, evento) => {
-    const eventoActualizado = await this.model.actualizarEvento(id, evento);
-    return eventoActualizado;
-  };
-
-  borrarEvento = async (id) => {
-    const eventoBorrado = await this.model.borrarEvento(id);
-    return eventoBorrado;
+  loginUsuario = async (usuario) => {
+    const usuarioLogueado = await this.model.obtenerUsuarioPorMail(
+      usuario.mail
+    );
+    if (!usuarioLogueado) return { error: "Usuario no encontrado" };
+    const validPassword = await bcrypt.compare(
+      usuario.password,
+      usuarioLogueado.password
+    );
+    if (!validPassword) {
+      return { error: "Contraseña no válida" };
+    }
+    const token = jwt.sign(
+      {
+        mail: usuarioLogueado.mail,
+        id: usuarioLogueado._id,
+      },
+      "secretKey"
+    );
+    return {token};
   };
 }
 

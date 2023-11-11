@@ -1,52 +1,42 @@
-import { ObjectId } from "mongodb"
-import CnxMongoDB from "../DBMongo.js"
+import { ObjectId } from "mongodb";
+import CnxMongoDB from "../DBMongo.js";
 
 class ModelMongoDB {
-    obtenerEventos = async categoria => {   
-        if(!CnxMongoDB.connection) return []
+  registrarUsuario = async (usuario) => {
+    if (!CnxMongoDB.connection) return {};
 
-        if(categoria) {
-            const evento = await CnxMongoDB.db.collection('eventos').find({categoria: categoria}).toArray()
-            return evento
-        }
-        else {
-            const eventos = await CnxMongoDB.db.collection('eventos').find({}).toArray()
-            return eventos
-        }
-    }
+    await CnxMongoDB.db.collection("usuarios").insertOne(usuario);
+    return usuario;
+  };
 
-    obtenerEvento = async id => {   
-        if(!CnxMongoDB.connection) return {}
-        const evento = await CnxMongoDB.db.collection('eventos').findOne({_id: new ObjectId(id)})
-        return evento
-    }
-
-    guardarEvento = async evento => {
-        if(!CnxMongoDB.connection) return {}
-
-        await CnxMongoDB.db.collection('eventos').insertOne(evento)
-        return evento
-    }
-
-    actualizarEvento = async (id, evento) => {
-        if(!CnxMongoDB.connection) return {}
-
-        await CnxMongoDB.db.collection('eventos').updateOne(
-            { _id: new ObjectId(id) },
-            { $set: evento }
-        )
-
-        const eventosActualizado = await this.obtenerEventos()
-        return eventosActualizado
-    }
-
-    borrarEvento = async id => {
-        if(!CnxMongoDB.connection) return {}
-
-        const eventosBorrado = await this.obtenerEventos()
-        await CnxMongoDB.db.collection('eventos').deleteOne( { _id: new ObjectId(id) })
-        return eventosBorrado
-    }
+  obtenerUsuarioPorMail = async mail => {   
+    if(!CnxMongoDB.connection) return {}
+    const usuario = await CnxMongoDB.db.collection('usuarios').findOne({mail: mail})
+    return usuario
 }
 
-export default ModelMongoDB
+guardarEventoCreado = async (id, idEvento) => {
+  if (!CnxMongoDB.connection) return {};
+
+  await CnxMongoDB.db
+    .collection("usuarios")
+    .updateOne(
+      { _id: id },
+      { $push: { eventosCreados: { $each: [idEvento] } } }
+    );
+};
+
+guardarEventoSuscripto = async (id, idEvento) => {
+  if (!CnxMongoDB.connection) return {};
+
+  await CnxMongoDB.db
+    .collection("usuarios")
+    .updateOne(
+      { _id: new ObjectId(id) },
+      { $push: { eventosSuscriptos: { $each: [new ObjectId(idEvento)] } } }
+    );
+};
+
+}
+
+export default ModelMongoDB;

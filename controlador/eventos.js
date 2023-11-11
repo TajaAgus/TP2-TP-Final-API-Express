@@ -18,7 +18,7 @@ class Controlador {
   };
 
   obtenerEventosUsuario = async (req, res) => {
-    const { id } = req.params;
+    const id = req.usuario.id;
     const eventos = await this.servicio.obtenerEventosUsuario(id);
     res.json(eventos);
   };
@@ -29,13 +29,14 @@ class Controlador {
     res.json(clima);
   };
 
-  guardarEvento = async (req, res) => {
+  crearEvento = async (req, res) => {
     const evento = req.body;
-    const eventoGuardado = await this.servicio.guardarEvento(evento);
+    evento.idUsuarioCreador = req.usuario.id;
+    evento.suscriptores= [req.usuario.id];
+    const eventoGuardado = await this.servicio.crearEvento(evento);
     res.json(eventoGuardado);
   };
 
-  // --------- PUT (actualización parcial) ----------
   actualizarEvento = async (req, res) => {
     const { id } = req.params;
     const evento = req.body;
@@ -48,6 +49,14 @@ class Controlador {
     const eventoBorrado = await this.servicio.borrarEvento(id);
     res.json(eventoBorrado);
   };
+
+  suscribirUsuario = async (req, res) => {
+    const { id } = req.params;
+    const idUsuario = req.usuario.id;
+    const eventos = await this.servicio.suscribirUsuario(id, idUsuario);
+    res.json(eventos);
+  };
+
 }
 
 export default Controlador;
