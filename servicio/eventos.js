@@ -27,7 +27,7 @@ class Servicio {
     const evento = await this.modelEvento.obtenerEvento(id);
 
     const ciudad = evento.ciudad;
-    const apiKey = "0194ea3482e0e589fe92a10f79156f66";
+    const apiKey = "0194ea3482e0e589fe92a10f79156f 66";
 
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&lang=sp,es&appid=${apiKey}&units=metric`;
 
