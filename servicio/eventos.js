@@ -27,13 +27,13 @@ class Servicio {
     const evento = await this.modelEvento.obtenerEvento(id);
 
     const ciudad = evento.ciudad;
-    const apiKey = "0194ea3482e0e589fe92a10f79156f66";
+    const apiKey = "c61a9fb3b500cc16571aa3562def234b";
 
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&lang=sp,es&appid=${apiKey}&units=metric`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&lang=sp,es&appid=${apiKey}&units=metric`;
 
     try {
       const respuesta = await axios.get(url);
-      const datosClima = await respuesta.data;
+      const datosClima = respuesta.data;
 
       const temperatura = datosClima.main.temp;
       const descripcion = datosClima.weather[0].description;
@@ -43,11 +43,23 @@ class Servicio {
         descripcion,
       };
 
+      if (evento.hora && evento.dia) {
+        const urlPronosticoHorario = `https://api.openweathermap.org/data/2.5/forecast?q=${ciudad}&lang=sp,es&appid=${apiKey}&units=metric`;
+        const respuestaHorario = await axios.get(urlPronosticoHorario);
+        const datosPronosticoHorario = respuestaHorario.data;
+        evento.pronosticoHorario = datosPronosticoHorario.list;
+      }
+
+      if (evento.dia) {
+        const urlPronosticoDiario = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${ciudad}&lang=sp,es&appid=${apiKey}&units=metric&cnt=7`;
+        const respuestaDiario = await axios.get(urlPronosticoDiario);
+        const datosPronosticoDiario = respuestaDiario.data;
+        evento.pronosticoDiario = datosPronosticoDiario.list;
+      }
+
       return evento;
     } catch (error) {
-      throw new Error(
-        `Error al obtener el clima. Código de estado: ${respuesta.status}`
-      );
+      throw new Error(`Error al obtener el clima. ${error.message}`);
     }
   };
 
