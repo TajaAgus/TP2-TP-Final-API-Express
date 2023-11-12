@@ -33,7 +33,7 @@ class Servicio {
 
     try {
       const respuesta = await axios.get(url);
-      const datosClima = await respuesta.data;
+      const datosClima = respuesta.data;
 
       const temperatura = datosClima.main.temp;
       const descripcion = datosClima.weather[0].description;
