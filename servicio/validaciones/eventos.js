@@ -12,7 +12,7 @@ export const validarCrearEvento = evento => {
         ciudad: Joi.string().min(4).max(20).required(),
         hora: Joi.number().integer().min(1).max(24).required(),
         dia: Joi.date().iso().greater('now'),
-        descripcion: Joi.string().alphanum().min(4).max(60).required(),
+        descripcion: Joi.string().min(4).max(60).required(),
         idUsuarioCreador: Joi.string().alphanum().required(),
         suscriptores: Joi.array().required()
 
