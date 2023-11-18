@@ -7,8 +7,13 @@ class Controlador {
 
   registrarUsuario = async (req, res) => {
     const usuario = req.body;
-    const usuarioGuardado = await this.servicio.registrarUsuario(usuario);
-    res.json(usuarioGuardado);
+    try {
+      const usuarioGuardado = await this.servicio.registrarUsuario(usuario);
+      res.json(usuarioGuardado);
+    }
+    catch (error) {
+      res.status(500).json({ error: error.message })
+    }
   };
 
   loginUsuario = async (req, res) => {

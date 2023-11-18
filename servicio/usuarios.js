@@ -1,6 +1,7 @@
 import ModelMongoDB from "../model/DAO/usuariosMongoDB.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { registrarUsuario } from "./validaciones/usuarios.js";
 
 class Servicio {
   constructor() {
@@ -8,11 +9,18 @@ class Servicio {
   }
 
   registrarUsuario = async (usuario) => {
+    const res = registrarUsuario(usuario)
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(usuario.password, salt);
     usuario.password = password;
-    const usuarioGuardado = await this.model.registrarUsuario(usuario);
-    return usuarioGuardado;
+    if (res.result) {
+      const usuarioGuardado = await this.model.registrarUsuario(usuario);
+      return usuarioGuardado;
+    }
+    else {
+      console.log(res.error)
+      throw res.error
+    }
   };
 
   loginUsuario = async (usuario) => {
@@ -34,7 +42,7 @@ class Servicio {
       },
       "secretKey"
     );
-    return {token};
+    return { token };
   };
 }
 
