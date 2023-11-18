@@ -10,8 +10,8 @@ export const validarCrearEvento = evento => {
         nombre: Joi.string().min(4).max(60).required(),
         categoria: Joi.string().min(4).max(20).required(),
         ciudad: Joi.string().min(4).max(20).required(),
-        hora: Joi.string().regex(/^(0?[1-9]|1[0-2])(am|pm)$/i).required(),
-        dia: Joi.date().iso().greater('now').max('12-31-2023'),
+        hora: Joi.number().integer().min(1).max(24).required(),
+        dia: Joi.date().iso().greater('now'),
         descripcion: Joi.string().alphanum().min(4).max(60).required(),
         idUsuarioCreador: Joi.string().alphanum().required(),
         suscriptores: Joi.array().required()
