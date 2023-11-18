@@ -22,44 +22,37 @@ class Servicio {
     const eventos = await this.modelEvento.obtenerEventosUsuario(id);
     return eventos;
   };
-
   obtenerClima = async (id) => {
-    const evento = await this.modelEvento.obtenerEvento(id);
-
-    const ciudad = evento.ciudad;
-    const apiKey = "0194ea3482e0e589fe92a10f79156f66";
-
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&lang=sp,es&appid=${apiKey}&units=metric`;
-
     try {
-      const respuesta = await axios.get(url);
-      const datosClima = respuesta.data;
+      const evento = await this.modelEvento.obtenerEvento(id);
+      const ciudad = evento.ciudad;
+      const dia = evento.dia;
+      const hora = evento.hora;
+      const apiKey = "ae7a7c2dd5e04ac4983182621231811";
 
-      const temperatura = datosClima.main.temp;
-      const descripcion = datosClima.weather[0].description;
+      const urlClimaActual = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${ciudad}&lang=es`;
+      const respuestaClimaActual = await axios.get(urlClimaActual);
+      const datosClimaActual = respuestaClimaActual.data;
 
-      evento.clima = {
-        temperatura,
-        descripcion,
-      };
+      const { current } = datosClimaActual;
+      const temperatura = current.temp_c;
+      const descripcion = current.condition.text;
 
-      if (evento.hora && evento.dia) {
-        const urlPronosticoHorario = `https://api.openweathermap.org/data/2.5/forecast?q=${ciudad}&lang=sp,es&appid=${apiKey}&units=metric`;
-        const respuestaHorario = await axios.get(urlPronosticoHorario);
-        const datosPronosticoHorario = respuestaHorario.data;
-        evento.pronosticoHorario = datosPronosticoHorario.list;
-      }
+      evento.clima = { temperatura, descripcion };
 
-      if (evento.dia) {
-        const urlPronosticoDiario = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${ciudad}&lang=sp,es&appid=${apiKey}&units=metric&cnt=7`;
-        const respuestaDiario = await axios.get(urlPronosticoDiario);
-        const datosPronosticoDiario = respuestaDiario.data;
-        evento.pronosticoDiario = datosPronosticoDiario.list;
+      if (hora && dia) {
+        const urlPronosticoCompleto = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${ciudad}&lang=es&hour=${hora}&dt=${dia}`;
+        const respuestaCompleta = await axios.get(urlPronosticoCompleto);
+        const datosPronosticoCompleto = respuestaCompleta.data;
+
+        evento.pronosticoHorario = datosPronosticoCompleto.hour;
+
+        evento.pronosticoDiario = datosPronosticoCompleto.forecast.forecastday;
       }
 
       return evento;
     } catch (error) {
-      throw new Error(`Error al obtener el clima. ${error.message}`);
+      console.error(`Error al obtener el clima. ${error.message}`);
     }
   };
 
