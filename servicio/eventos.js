@@ -26,6 +26,7 @@ class Servicio {
     const eventos = await this.modelEvento.obtenerEventosUsuario(id);
     return eventos;
   };
+
   obtenerClima = async (id) => {
     try {
       const evento = await this.modelEvento.obtenerEvento(id);
@@ -34,25 +35,33 @@ class Servicio {
       const hora = evento.hora;
       const apiKey = "ae7a7c2dd5e04ac4983182621231811";
 
-      const urlClimaActual = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${ciudad}&lang=es`;
-      const respuestaClimaActual = await axios.get(urlClimaActual);
-      const datosClimaActual = respuestaClimaActual.data;
+      const urlPronosticoCompleto = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${ciudad}&lang=es&hour=${hora}&dt=${dia}`;
+      const respuestaCompleta = await axios.get(urlPronosticoCompleto);
+      const datosPronosticoCompleto = respuestaCompleta.data;
 
-      const { current } = datosClimaActual;
-      const temperatura = current.temp_c;
-      const descripcion = current.condition.text;
+      const pronosticoHorario =
+        datosPronosticoCompleto.forecast.forecastday[0].hour.find((h) =>
+          h.time.includes(hora)
+        );
+      const pronosticoDiario =
+        datosPronosticoCompleto.forecast.forecastday.find(
+          (d) => d.date === dia
+        );
 
-      evento.clima = { temperatura, descripcion };
+      evento.pronosticoHorario = {
+        time: pronosticoHorario.time,
+        temp_c: pronosticoHorario.temp_c,
+        condition: pronosticoHorario.condition,
+      };
 
-      if (hora && dia) {
-        const urlPronosticoCompleto = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${ciudad}&lang=es&hour=${hora}&dt=${dia}`;
-        const respuestaCompleta = await axios.get(urlPronosticoCompleto);
-        const datosPronosticoCompleto = respuestaCompleta.data;
-
-        evento.pronosticoHorario = datosPronosticoCompleto.hour;
-
-        evento.pronosticoDiario = datosPronosticoCompleto.forecast.forecastday;
-      }
+      evento.pronosticoDiario = {
+        date: pronosticoDiario.date,
+        day: {
+          maxtemp_c: pronosticoDiario.day.maxtemp_c,
+          mintemp_c: pronosticoDiario.day.mintemp_c,
+          condition: pronosticoDiario.day.condition,
+        },
+      };
 
       return evento;
     } catch (error) {
