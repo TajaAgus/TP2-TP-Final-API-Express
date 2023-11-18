@@ -1,6 +1,10 @@
 import ModelMongoDBEvento from "../model/DAO/eventosMongoDB.js";
 import ModelMongoDBUsuario from "../model/DAO/usuariosMongoDB.js";
 import axios from "axios";
+import {
+  validarCrearEvento,
+  validarActualizarEvento,
+} from "./validaciones/eventos.js";
 
 class Servicio {
   constructor() {
@@ -57,20 +61,32 @@ class Servicio {
   };
 
   crearEvento = async (evento) => {
-    const eventoGuardado = await this.modelEvento.crearEvento(evento);
-    await this.modelUsuario.guardarEventoCreado(
-      eventoGuardado.idUsuarioCreador,
-      eventoGuardado._id
-    );
-    return eventoGuardado;
+    const res = validarCrearEvento(evento);
+    if (res.result) {
+      const eventoGuardado = await this.modelEvento.crearEvento(evento);
+      await this.modelUsuario.guardarEventoCreado(
+        eventoGuardado.idUsuarioCreador,
+        eventoGuardado._id
+      );
+      return eventoGuardado;
+    } else {
+      console.log(res.error);
+      throw res.error;
+    }
   };
 
   actualizarEvento = async (id, evento) => {
-    const eventoActualizado = await this.modelEvento.actualizarEvento(
-      id,
-      evento
-    );
-    return eventoActualizado;
+    const res = validarActualizarEvento(evento);
+    if (res.result) {
+      const eventoActualizado = await this.modelEvento.actualizarEvento(
+        id,
+        evento
+      );
+      return eventoActualizado;
+    } else {
+      console.log(res.error);
+      throw res.error;
+    }
   };
 
   borrarEvento = async (id) => {

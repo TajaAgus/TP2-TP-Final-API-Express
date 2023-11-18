@@ -7,13 +7,24 @@ class Controlador {
 
   registrarUsuario = async (req, res) => {
     const usuario = req.body;
-    const usuarioGuardado = await this.servicio.registrarUsuario(usuario);
-    res.json(usuarioGuardado);
+    try {
+      const usuarioGuardado = await this.servicio.registrarUsuario(usuario);
+      if (usuarioGuardado.error) {
+        return res.status(400).json(usuarioGuardado)
+      }
+      res.json(usuarioGuardado);
+    }
+    catch (error) {
+      res.status(500).json({ error: error.message })
+    }
   };
 
   loginUsuario = async (req, res) => {
     const usuario = req.body;
     const usuarioLogueado = await this.servicio.loginUsuario(usuario);
+    if (usuarioLogueado.error) {
+      return res.status(401).json(usuarioLogueado);
+    }
     res.json(usuarioLogueado);
   };
 }

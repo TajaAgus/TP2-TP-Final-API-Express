@@ -30,18 +30,29 @@ class Controlador {
   };
 
   crearEvento = async (req, res) => {
+
     const evento = req.body;
     evento.idUsuarioCreador = req.usuario.id;
-    evento.suscriptores= [req.usuario.id];
-    const eventoGuardado = await this.servicio.crearEvento(evento);
-    res.json(eventoGuardado);
+    evento.suscriptores = [req.usuario.id];
+    try {
+      const eventoGuardado = await this.servicio.crearEvento(evento);
+      res.json(eventoGuardado);
+    }
+    catch (error) {
+      res.status(500).json({ error: error.message })
+    }
   };
 
   actualizarEvento = async (req, res) => {
     const { id } = req.params;
     const evento = req.body;
-    const eventoActualizado = await this.servicio.actualizarEvento(id, evento);
-    res.json(eventoActualizado);
+    try {
+      const eventoActualizado = await this.servicio.actualizarEvento(id, evento);
+      res.json(eventoActualizado);
+    }
+    catch (error) {
+      res.status(500).json({ error: error.message })
+    }
   };
 
   borrarEvento = async (req, res) => {
