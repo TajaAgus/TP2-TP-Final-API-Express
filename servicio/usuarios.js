@@ -9,17 +9,20 @@ class Servicio {
   }
 
   registrarUsuario = async (usuario) => {
-    const res = registrarUsuario(usuario)
+    const res = registrarUsuario(usuario);
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(usuario.password, salt);
     usuario.password = password;
     if (res.result) {
+      const emailExiste = await this.model.obtenerUsuarioPorMail(usuario.mail);
+      if (emailExiste) {
+        return { error: "Ya existe un usuario con este mail" };
+      }
       const usuarioGuardado = await this.model.registrarUsuario(usuario);
-      return usuarioGuardado;
-    }
-    else {
-      console.log(res.error)
-      throw res.error
+      return { mensaje: "Usuario registrado correctamente" };
+    } else {
+      console.log(res.error);
+      throw res.error;
     }
   };
 
