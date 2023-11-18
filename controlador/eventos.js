@@ -68,6 +68,13 @@ class Controlador {
     res.json(eventos);
   };
 
+  desuscribirUsuario = async (req, res) => {
+    const { id } = req.params;
+    const idUsuario = req.usuario.id;
+    const eventos = await this.servicio.desuscribirUsuario(id, idUsuario);
+    res.json(eventos);
+  };
+
 }
 
 export default Controlador;

@@ -72,6 +72,20 @@ class ModelMongoDB {
     return evento;
   };
 
+  desuscribirUsuario = async (id, idUsuario) => {
+    if (!CnxMongoDB.connection) return {};
+
+    await CnxMongoDB.db
+      .collection("eventos")
+      .updateOne(
+        { _id: new ObjectId(id) },
+        { $pull: { suscriptores: new ObjectId(idUsuario) } }
+      );
+
+    const evento = await this.obtenerEvento(id);
+    return evento;
+  };
+
   borrarEvento = async (id) => {
     if (!CnxMongoDB.connection) return {};
 

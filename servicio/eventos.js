@@ -77,6 +77,7 @@ class Servicio {
         eventoGuardado.idUsuarioCreador,
         eventoGuardado._id
       );
+      await this.modelUsuario.guardarEventoSuscripto(eventoGuardado.idUsuarioCreador, eventoGuardado._id);
       return eventoGuardado;
     } else {
       console.log(res.error);
@@ -106,6 +107,12 @@ class Servicio {
   suscribirUsuario = async (id, idUsuario) => {
     const evento = await this.modelEvento.suscribirUsuario(id, idUsuario);
     await this.modelUsuario.guardarEventoSuscripto(idUsuario, id);
+    return evento;
+  };
+
+  desuscribirUsuario = async (id, idUsuario) => {
+    const evento = await this.modelEvento.desuscribirUsuario(id, idUsuario);
+    await this.modelUsuario.eliminarEventoSuscripto(idUsuario, id);
     return evento;
   };
 }
