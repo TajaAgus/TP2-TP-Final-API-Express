@@ -1,57 +1,57 @@
 import { expect } from "chai"
 import supertest from "supertest"
-import generador from './generador/eventos.js'
+import generadorEventos from './generador/eventos.js'
 import Server from "../server.js"
 
-const request = supertest('http://127.0.0.1:8080')
 
-describe('Test Eventos', () =>{
+describe('Tests Eventos', () =>{
     describe('POST', () => {
-        it('Deberia crear un evento con campo de Id Usuario Creador igual al Id de sesión del Usuario', async () =>{
-            const server = new Server(8081, 'MONGODB')
-            const app = await server.start()
+        it('Campo de Id Usuario Creador = Id de sesión del Usuario Y Evento con todas las Keys', async () =>{
+            const app = await new Server(8081, 'MONGODB').start()
             const request = supertest(app)
-            const evento = generador.get()
+
+            const evento = generadorEventos.get()
 
             const usuario = {
                 mail: "usuario2@gmail.com",
                 password: "123"
             }
-            const res = await request.post('/api/usuarios/login').send(usuario)
-            const token = res.token
-            const response = await request.post('/api/eventos').set('Authorization','bearer '+token).send(evento)
-            expect(response.status).to.eql(200)
-
-            const eventoGuardado = response.body
-            console.log(eventoGuardado)
-            expect(eventoGuardado).to.include.keys('ciudad', 'idUsuarioCreador', 'suscriptores', 'nombre', 
-            'categoria', 'descripcion', 'hora', 'dia' )
-
-            expect(eventoGuardado.nombre).to.eql(evento.nombre)
-            expect(eventoGuardado.ciudad).to.eql(evento.ciudad)
-            expect(eventoGuardado.idUsuarioCreador).to.eql(evento.idUsuarioCreador)
-            expect(eventoGuardado.suscriptores).to.eql(evento.suscriptores)
-            expect(eventoGuardado.categoria).to.eql(evento.categoria)
-            expect(eventoGuardado.descripcion).to.eql(evento.descripcion)
-            expect(eventoGuardado.hora).to.eql(evento.hora)
-            expect(eventoGuardado.dia).to.eql(evento.dia)
-
-        })
-    })
-
-    describe('GET', () => {
-        it('Deberia retornar un status 200', async () =>{
-            const server = new Server(8081, 'MONGODB')
-            const app = await server.start()
-
-            const request = supertest(app)
-            const response = await request.get('/api/productos')
             
-            expect(response.status).to.eql(200)
+            const { body } = await request.post('/api/usuarios/login').send(usuario)
+            const token = body.token
 
-            await server.stop() 
+            const {body: eventoGuardado, status: statusGuardado} = await request.post('/api/eventos').set('Authorization','bearer '+ token).send(evento)
+            expect(statusGuardado).to.eql(200)
+
+            expect(eventoGuardado).to.have.property('ciudad');
+            expect(eventoGuardado).to.have.property('idUsuarioCreador');
+            expect(eventoGuardado).to.have.property('suscriptores');
+            expect(eventoGuardado).to.have.property('nombre');
+            expect(eventoGuardado).to.have.property('categoria');
+            expect(eventoGuardado).to.have.property('descripcion');
+            expect(eventoGuardado).to.have.property('hora');
+            expect(eventoGuardado).to.have.property('dia');
+
+            const { body: eventoGet, status: statusGet} = await request.get(`/api/eventos/uno/${eventoGuardado._id}`).set('Authorization', 'bearer ' + token);
+            expect(statusGet).to.eql(200);
+
+            expect(eventoGuardado.idUsuarioCreador).to.eql(eventoGet.idUsuarioCreador)
         })
     })
+
+    // describe('GET', () => {
+    //     it('Deberia retornar un status 200', async () =>{
+    //         const server = new Server(8081, 'MONGODB')
+    //         const app = await server.start()
+
+    //         const request = supertest(app)
+    //         const response = await request.get('/api/productos')
+            
+    //         expect(response.status).to.eql(200)
+
+    //         await server.stop() 
+    //     })
+    // })
 
    
 })

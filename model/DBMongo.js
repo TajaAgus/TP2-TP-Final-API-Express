@@ -9,7 +9,7 @@ class CnxMongoDB {
     static conectar = async _ => {
         try {
             console.log('Conectando a la base de datos...')
-            CnxMongoDB.client = new MongoClient(config.STRCNX)
+            CnxMongoDB.client = new MongoClient(config.DATABASE_URL)
             await CnxMongoDB.client.connect()
             console.log('Base de datos conectada!')
 

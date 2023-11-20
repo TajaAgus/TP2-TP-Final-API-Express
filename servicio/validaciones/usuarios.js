@@ -5,7 +5,7 @@ export const registrarUsuario = usuario => {
 
     const usuarioSchema = Joi.object({
         mail: Joi.string().email().required(),
-        password: Joi.string().min(3).max(100).required(),
+        password: Joi.string().min(8).max(48).required(),
     })
 
     const { error } = usuarioSchema.validate(usuario)
@@ -14,4 +14,3 @@ export const registrarUsuario = usuario => {
     }
     return { result: true }
 }
-

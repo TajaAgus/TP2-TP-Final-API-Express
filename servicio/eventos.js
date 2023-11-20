@@ -1,10 +1,9 @@
+import axios from "axios";
+import config from "../config.js";
 import ModelMongoDBEvento from "../model/DAO/eventosMongoDB.js";
 import ModelMongoDBUsuario from "../model/DAO/usuariosMongoDB.js";
-import axios from "axios";
-import {
-  validarCrearEvento,
-  validarActualizarEvento,
-} from "./validaciones/eventos.js";
+import { validarCrearEvento, validarActualizarEvento } from "./validaciones/eventos.js";
+
 
 class Servicio {
   constructor() {
@@ -12,65 +11,71 @@ class Servicio {
     this.modelUsuario = new ModelMongoDBUsuario();
   }
 
-  obtenerEvento = async (id) => {
-    const evento = await this.modelEvento.obtenerEvento(id);
+  obtenerEventoUsuario = async (idUsuario, idEvento) => {
+    const evento = await this.modelEvento.obtenerEventoUsuario(idEvento, idUsuario);
     return evento;
+  };
+
+  obtenerEventosUsuario = async (idUsuario) => {
+    const eventos = await this.modelEvento.obtenerEventosUsuario(idUsuario);
+    return eventos;
   };
 
   obtenerEventos = async (categoria) => {
     const eventos = await this.modelEvento.obtenerEventos(categoria);
     return eventos;
   };
+  
+  obtenerClima = async (idEvento, idUsuario) => {
+    const evento = await this.modelEvento.obtenerEventoUsuario(idEvento, idUsuario);
 
-  obtenerEventosUsuario = async (id) => {
-    const eventos = await this.modelEvento.obtenerEventosUsuario(id);
-    return eventos;
+      if (evento) {
+        try {
+          const ciudad = evento.ciudad;
+          const dia = evento.dia;
+          const hora = evento.hora;
+          const apiKey = config.WEATHER_API_KEY;
+    
+          const weatherUrl = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${ciudad}&lang=es&hour=${hora}&dt=${dia}`;
+          const res = await axios.get(weatherUrl);
+    
+          const datos = res.data;
+          const datosHora = datos.forecast.forecastday[0].hour.find((h) => h.time.includes(hora));
+          const datosDia = datos.forecast.forecastday.find((d) => d.date === dia);
+    
+          evento.datosHora = {
+            time: datosHora.time,
+            temp_c: datosHora.temp_c,
+            condition: datosHora.condition,
+          };
+    
+          evento.datosDia = {
+            date: datosDia.date,
+            day: {
+              maxtemp_c: datosDia.day.maxtemp_c,
+              mintemp_c: datosDia.day.mintemp_c,
+              condition: datosDia.day.condition,
+            },
+          };
+
+          return evento;
+
+        } catch (error) {
+          console.error(`Error al obtener el clima. ${error.message}`);
+          return { status: "Error al obtener clima" }
+        }
+      }
+      else {
+        return {status: "Evento para usuario no encontrado"}
+      }
   };
 
-  obtenerClima = async (id) => {
-    try {
-      const evento = await this.modelEvento.obtenerEvento(id);
-      const ciudad = evento.ciudad;
-      const dia = evento.dia;
-      const hora = evento.hora;
-      const apiKey = "ae7a7c2dd5e04ac4983182621231811";
+  crearEvento = async (evento, idUsuario) => {
+    evento.idUsuarioCreador = idUsuario;
+    evento.suscriptores = [idUsuario];
 
-      const urlPronosticoCompleto = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${ciudad}&lang=es&hour=${hora}&dt=${dia}`;
-      const respuestaCompleta = await axios.get(urlPronosticoCompleto);
-      const datosPronosticoCompleto = respuestaCompleta.data;
-
-      const pronosticoHorario =
-        datosPronosticoCompleto.forecast.forecastday[0].hour.find((h) =>
-          h.time.includes(hora)
-        );
-      const pronosticoDiario =
-        datosPronosticoCompleto.forecast.forecastday.find(
-          (d) => d.date === dia
-        );
-
-      evento.pronosticoHorario = {
-        time: pronosticoHorario.time,
-        temp_c: pronosticoHorario.temp_c,
-        condition: pronosticoHorario.condition,
-      };
-
-      evento.pronosticoDiario = {
-        date: pronosticoDiario.date,
-        day: {
-          maxtemp_c: pronosticoDiario.day.maxtemp_c,
-          mintemp_c: pronosticoDiario.day.mintemp_c,
-          condition: pronosticoDiario.day.condition,
-        },
-      };
-
-      return evento;
-    } catch (error) {
-      console.error(`Error al obtener el clima. ${error.message}`);
-    }
-  };
-
-  crearEvento = async (evento) => {
     const res = validarCrearEvento(evento);
+
     if (res.result) {
       const eventoGuardado = await this.modelEvento.crearEvento(evento);
       await this.modelUsuario.guardarEventoCreado(
@@ -85,13 +90,10 @@ class Servicio {
     }
   };
 
-  actualizarEvento = async (id, evento) => {
+  actualizarEvento = async (idEvento, evento, idUsuario) => {
     const res = validarActualizarEvento(evento);
     if (res.result) {
-      const eventoActualizado = await this.modelEvento.actualizarEvento(
-        id,
-        evento
-      );
+      const eventoActualizado = await this.modelEvento.actualizarEvento(idEvento, evento, idUsuario);
       return eventoActualizado;
     } else {
       console.log(res.error);
@@ -99,20 +101,20 @@ class Servicio {
     }
   };
 
-  borrarEvento = async (id) => {
-    const eventoBorrado = await this.modelEvento.borrarEvento(id);
+  borrarEvento = async (idEvento, idUsuario) => {
+    const eventoBorrado = await this.modelEvento.borrarEvento(idEvento, idUsuario);
     return eventoBorrado;
   };
 
-  suscribirUsuario = async (id, idUsuario) => {
-    const evento = await this.modelEvento.suscribirUsuario(id, idUsuario);
-    await this.modelUsuario.guardarEventoSuscripto(idUsuario, id);
+  suscribirUsuario = async (idEvento, idUsuario) => {
+    const evento = await this.modelEvento.suscribirUsuario(idEvento, idUsuario);
+    await this.modelUsuario.guardarEventoSuscripto(idUsuario, idEvento);
     return evento;
   };
 
-  desuscribirUsuario = async (id, idUsuario) => {
-    const evento = await this.modelEvento.desuscribirUsuario(id, idUsuario);
-    await this.modelUsuario.eliminarEventoSuscripto(idUsuario, id);
+  desuscribirUsuario = async (idEvento, idUsuario) => {
+    const evento = await this.modelEvento.desuscribirUsuario(idEvento, idUsuario);
+    await this.modelUsuario.eliminarEventoSuscripto(idUsuario, idEvento);
     return evento;
   };
 }

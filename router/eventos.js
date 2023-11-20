@@ -10,19 +10,19 @@ class Router {
     }
 
     start() {
-        this.router.get('/', this.controlador.obtenerEventos)
+        this.router.get('/uno/:id', validarToken, this.controlador.obtenerEventoUsuario)
+        this.router.get('/varios', validarToken, this.controlador.obtenerEventosUsuario)
+        this.router.get('/clima/:id', validarToken, this.controlador.obtenerClima)
         this.router.post('/', validarToken, this.controlador.crearEvento)
         this.router.post('/suscribir/:id', validarToken, this.controlador.suscribirUsuario)
-        this.router.get('/usuario', validarToken, this.controlador.obtenerEventosUsuario)
-        this.router.get('/:id', this.controlador.obtenerEvento)
-        this.router.put('/:id', this.controlador.actualizarEvento)
-        this.router.get('/clima/:id', this.controlador.obtenerClima)
-        this.router.delete('/:id', this.controlador.borrarEvento)
         this.router.delete('/desuscribir/:id', validarToken, this.controlador.desuscribirUsuario)
+        this.router.delete('/:id', validarToken, this.controlador.borrarEvento)
+        this.router.put('/:id', validarToken, this.controlador.actualizarEvento)
+
+        this.router.get('/', validarToken, this.controlador.obtenerEventos)
 
         return this.router
     }
 }   
 
 export default Router
-

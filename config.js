@@ -1,11 +1,17 @@
-const PORT = 8080
-const MODO_PERSISTENCIA = 'MONGODB'  // 'MEM', 'FILE', 'MONGODB'
-const STRCNX = 'mongodb://127.0.0.1'
-const BASE = 'mibase'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const PORT = process.env.PORT
+const MODO_PERSISTENCIA = process.env.MODO_PERSISTENCIA
+const DATABASE_URL = process.env.DATABASE_URL
+const BASE = process.env.BASE
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY
 
 export default {
     PORT,
     MODO_PERSISTENCIA,
-    STRCNX,
-    BASE
+    DATABASE_URL,
+    BASE,
+    WEATHER_API_KEY
 }

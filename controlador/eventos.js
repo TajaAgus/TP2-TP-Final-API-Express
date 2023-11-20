@@ -1,9 +1,23 @@
 import Servicio from "../servicio/eventos.js";
 
+
 class Controlador {
   constructor() {
     this.servicio = new Servicio();
   }
+
+  obtenerEventoUsuario = async (req, res) => {
+    const idUsuario = req.usuario.id;
+    const {id: idEvento} = req.params;
+    const eventos = await this.servicio.obtenerEventoUsuario(idUsuario, idEvento);
+    res.json(eventos);
+  };
+
+  obtenerEventosUsuario = async (req, res) => {
+    const idUsuario = req.usuario.id;
+    const eventos = await this.servicio.obtenerEventosUsuario(idUsuario);
+    res.json(eventos);
+  };
 
   obtenerEventos = async (req, res) => {
     const { categoria } = req.query;
@@ -11,31 +25,18 @@ class Controlador {
     res.json(eventos);
   };
 
-  obtenerEvento = async (req, res) => {
-    const { id } = req.params;
-    const eventos = await this.servicio.obtenerEvento(id);
-    res.json(eventos);
-  };
-
-  obtenerEventosUsuario = async (req, res) => {
-    const id = req.usuario.id;
-    const eventos = await this.servicio.obtenerEventosUsuario(id);
-    res.json(eventos);
-  };
-
   obtenerClima = async (req, res) => {
-    const { id } = req.params;
-    const clima = await this.servicio.obtenerClima(id);
+    const idUsuario = req.usuario.id;
+    const { id: idEvento } = req.params;
+    const clima = await this.servicio.obtenerClima(idEvento, idUsuario);
     res.json(clima);
   };
 
   crearEvento = async (req, res) => {
-
     const evento = req.body;
-    evento.idUsuarioCreador = req.usuario.id;
-    evento.suscriptores = [req.usuario.id];
+    const idUsuario = req.usuario.id;
     try {
-      const eventoGuardado = await this.servicio.crearEvento(evento);
+      const eventoGuardado = await this.servicio.crearEvento(evento, idUsuario);
       res.json(eventoGuardado);
     }
     catch (error) {
@@ -44,10 +45,11 @@ class Controlador {
   };
 
   actualizarEvento = async (req, res) => {
-    const { id } = req.params;
+    const idUsuario = req.usuario.id
+    const { id: idEvento } = req.params;
     const evento = req.body;
     try {
-      const eventoActualizado = await this.servicio.actualizarEvento(id, evento);
+      const eventoActualizado = await this.servicio.actualizarEvento(idEvento, evento, idUsuario);
       res.json(eventoActualizado);
     }
     catch (error) {
@@ -56,25 +58,25 @@ class Controlador {
   };
 
   borrarEvento = async (req, res) => {
-    const { id } = req.params;
-    const eventoBorrado = await this.servicio.borrarEvento(id);
+    const {id: idEvento} = req.params;
+    const idUsuario = req.usuario.id;
+    const eventoBorrado = await this.servicio.borrarEvento(idEvento, idUsuario);
     res.json(eventoBorrado);
   };
 
   suscribirUsuario = async (req, res) => {
-    const { id } = req.params;
+    const {id: idEvento} = req.params;
     const idUsuario = req.usuario.id;
-    const eventos = await this.servicio.suscribirUsuario(id, idUsuario);
+    const eventos = await this.servicio.suscribirUsuario(idEvento, idUsuario);
     res.json(eventos);
   };
 
   desuscribirUsuario = async (req, res) => {
-    const { id } = req.params;
+    const {id: idEvento} = req.params;
     const idUsuario = req.usuario.id;
-    const eventos = await this.servicio.desuscribirUsuario(id, idUsuario);
+    const eventos = await this.servicio.desuscribirUsuario(idEvento, idUsuario);
     res.json(eventos);
   };
-
 }
 
 export default Controlador;
