@@ -29,6 +29,9 @@ class Controlador {
     const idUsuario = req.usuario.id;
     const { id: idEvento } = req.params;
     const clima = await this.servicio.obtenerClima(idEvento, idUsuario);
+    if (clima.error) {
+      return res.status(500).json(clima)
+    }
     res.json(clima);
   };
 
@@ -67,15 +70,21 @@ class Controlador {
   suscribirUsuario = async (req, res) => {
     const {id: idEvento} = req.params;
     const idUsuario = req.usuario.id;
-    const eventos = await this.servicio.suscribirUsuario(idEvento, idUsuario);
-    res.json(eventos);
+    const evento = await this.servicio.suscribirUsuario(idEvento, idUsuario);
+    if (evento.error) {
+      return res.status(500).json(evento)
+    }
+    res.json(evento);
   };
 
   desuscribirUsuario = async (req, res) => {
     const {id: idEvento} = req.params;
     const idUsuario = req.usuario.id;
-    const eventos = await this.servicio.desuscribirUsuario(idEvento, idUsuario);
-    res.json(eventos);
+    const evento = await this.servicio.desuscribirUsuario(idEvento, idUsuario);
+    if (evento.error) {
+      return res.status(500).json(evento)
+    }
+    res.json(evento);
   };
 }
 

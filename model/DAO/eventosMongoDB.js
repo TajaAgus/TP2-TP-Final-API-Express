@@ -19,7 +19,6 @@ class ModelMongoDB {
   };
 
   obtenerEventosUsuario = async (idUsuario) => {
-    console.log(idUsuario)
     if (!CnxMongoDB.connection) return {};
     const eventos = await CnxMongoDB.db
       .collection("eventos")
@@ -83,6 +82,7 @@ class ModelMongoDB {
 
   desuscribirUsuario = async (idEvento, idUsuario) => {
     if (!CnxMongoDB.connection) return {};
+    const evento = await this.obtenerEventoUsuario(idEvento, idUsuario);
 
     await CnxMongoDB.db
       .collection("eventos")
@@ -91,7 +91,6 @@ class ModelMongoDB {
         { $pull: { suscriptores: new ObjectId(idUsuario) } }
       );
 
-    const evento = await this.obtenerEventoUsuario(idEvento, idUsuario);
     return evento;
   };
 
