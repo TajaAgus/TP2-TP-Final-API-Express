@@ -7,7 +7,8 @@ import Server from "../server.js"
 describe('Tests Eventos', () =>{
     describe('POST', () => {
         it('Campo de Id Usuario Creador = Id de sesión del Usuario Y Evento con todas las Keys', async () =>{
-            const app = await new Server(8081, 'MONGODB').start()
+            const server = new Server(8081, 'MONGODB')
+            const app = await server.start()
             const request = supertest(app)
 
             const evento = generadorEventos.get()
@@ -36,12 +37,14 @@ describe('Tests Eventos', () =>{
             expect(statusGet).to.eql(200);
 
             expect(eventoGuardado.idUsuarioCreador).to.eql(eventoGet.idUsuarioCreador)
+
+            await server.stop()
         })
     })
 
     describe('GET', () => {
-        it('Deberia retornar un status 200', async () =>{
-            const server = new Server(8082, 'MONGODB')
+        it('Endpoint Eventos general deberia retornar un status 200', async () =>{
+            const server = new Server(8081, 'MONGODB')
             const app = await server.start()
 
             const request = supertest(app)
@@ -61,7 +64,4 @@ describe('Tests Eventos', () =>{
             await server.stop() 
         })
     })
-
-   
 })
-
