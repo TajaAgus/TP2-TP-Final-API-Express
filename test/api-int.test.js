@@ -13,8 +13,8 @@ describe('Tests Eventos', () =>{
             const evento = generadorEventos.get()
 
             const usuario = {
-                mail: "usuario2@gmail.com",
-                password: "123"
+                mail: "usuario-pruebas@gmail.com",
+                password: "12345678"
             }
             
             const { body } = await request.post('/api/usuarios/login').send(usuario)
@@ -39,19 +39,28 @@ describe('Tests Eventos', () =>{
         })
     })
 
-    // describe('GET', () => {
-    //     it('Deberia retornar un status 200', async () =>{
-    //         const server = new Server(8081, 'MONGODB')
-    //         const app = await server.start()
+    describe('GET', () => {
+        it('Deberia retornar un status 200', async () =>{
+            const server = new Server(8082, 'MONGODB')
+            const app = await server.start()
 
-    //         const request = supertest(app)
-    //         const response = await request.get('/api/productos')
+            const request = supertest(app)
+
+            const usuario = {
+                mail: "usuario-pruebas@gmail.com",
+                password: "12345678"
+            }
             
-    //         expect(response.status).to.eql(200)
+            const { body } = await request.post('/api/usuarios/login').send(usuario)
+            const token = body.token
 
-    //         await server.stop() 
-    //     })
-    // })
+            const {status} = await request.get('/api/eventos').set('Authorization','bearer '+ token)
+            
+            expect(status).to.eql(200)
+
+            await server.stop() 
+        })
+    })
 
    
 })

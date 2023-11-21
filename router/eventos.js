@@ -10,6 +10,7 @@ class Router {
     }
 
     start() {
+        this.router.get('/', validarToken, this.controlador.obtenerEventos)
         this.router.get('/uno/:id', validarToken, this.controlador.obtenerEventoUsuario)
         this.router.get('/varios', validarToken, this.controlador.obtenerEventosUsuario)
         this.router.get('/clima/:id', validarToken, this.controlador.obtenerClima)
@@ -19,7 +20,6 @@ class Router {
         this.router.delete('/:id', validarToken, this.controlador.borrarEvento)
         this.router.put('/:id', validarToken, this.controlador.actualizarEvento)
 
-        this.router.get('/', validarToken, this.controlador.obtenerEventos)
 
         return this.router
     }
