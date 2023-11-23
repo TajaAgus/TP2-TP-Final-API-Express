@@ -44,7 +44,7 @@ describe('Tests Eventos', () =>{
 
     describe('GET', () => {
         it('Endpoint Eventos general deberia retornar un status 200', async () =>{
-            const server = new Server(8081, 'MONGODB')
+            const server = new Server(8082, 'MONGODB')
             const app = await server.start()
 
             const request = supertest(app)
