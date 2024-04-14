@@ -25,6 +25,12 @@ class Controlador {
     res.json(eventos);
   };
 
+  obtenerEventosInteresados = async (req, res) => {
+    const idUsuario = req.usuario.id;
+    const eventos = await this.servicio.obtenerEventosInteresados(idUsuario);
+    res.json(eventos);
+  };
+
   obtenerClima = async (req, res) => {
     const idUsuario = req.usuario.id;
     const { id: idEvento } = req.params;

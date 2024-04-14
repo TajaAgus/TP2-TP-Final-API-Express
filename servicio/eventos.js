@@ -31,6 +31,13 @@ class Servicio {
     return eventos;
   };
 
+  obtenerEventosInteresados = async (idUsuario) => {
+    const usuario = await this.modelUsuario.obtenerUsuarioPorId(idUsuario);
+    const intereses = usuario.intereses;
+    const eventos = await this.modelEvento.obtenerEventosInteresados(intereses);
+    return eventos;
+  };
+
   obtenerClima = async (idEvento, idUsuario) => {
     const evento = await this.modelEvento.obtenerEventoUsuario(
       idEvento,
