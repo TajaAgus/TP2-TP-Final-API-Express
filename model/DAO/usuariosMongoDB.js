@@ -17,6 +17,14 @@ class ModelMongoDB {
     return usuario;
   };
 
+  obtenerUsuarioPorId = async (idUsuario) => {
+    if (!CnxMongoDB.connection) return {};
+    const usuario = await CnxMongoDB.db
+      .collection("usuarios")
+      .findOne({ _id: new ObjectId(idUsuario) });
+    return usuario;
+  };
+
   guardarEventoCreado = async (id, idEvento) => {
     if (!CnxMongoDB.connection) return {};
 

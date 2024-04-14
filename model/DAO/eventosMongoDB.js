@@ -5,16 +5,17 @@ class ModelMongoDB {
   obtenerEventoUsuario = async (idEvento, idUsuario) => {
     if (!CnxMongoDB.connection) return {};
 
-    const evento = await CnxMongoDB.db
-      .collection("eventos")
-      .findOne({ _id: new ObjectId(idEvento), suscriptores: {
-        $elemMatch: { $eq: new ObjectId(idUsuario) }
-    } });
+    const evento = await CnxMongoDB.db.collection("eventos").findOne({
+      _id: new ObjectId(idEvento),
+      suscriptores: {
+        $elemMatch: { $eq: new ObjectId(idUsuario) },
+      },
+    });
 
     if (!evento) {
       return null;
     }
-    
+
     return evento;
   };
 
@@ -45,6 +46,16 @@ class ModelMongoDB {
     }
   };
 
+  obtenerEventosInteresados = async (intereses) => {
+    if (!CnxMongoDB.connection) return [];
+
+    const eventos = await CnxMongoDB.db
+      .collection("eventos")
+      .find({ categoria: { $in: intereses } })
+      .toArray();
+    return eventos;
+  };
+
   crearEvento = async (evento) => {
     if (!CnxMongoDB.connection) return {};
 
@@ -62,7 +73,10 @@ class ModelMongoDB {
       .collection("eventos")
       .updateOne({ _id: new ObjectId(idEvento) }, { $set: evento });
 
-    const eventosActualizado = await this.obtenerEventoUsuario(idEvento, idUsuario);
+    const eventosActualizado = await this.obtenerEventoUsuario(
+      idEvento,
+      idUsuario
+    );
     return eventosActualizado;
   };
 
@@ -97,9 +111,10 @@ class ModelMongoDB {
   borrarEvento = async (idEvento, idUsuario) => {
     if (!CnxMongoDB.connection) return {};
 
-    await CnxMongoDB.db
-    .collection("eventos")
-    .deleteOne({ _id: new ObjectId(idEvento), idUsuarioCreador: new ObjectId(idUsuario) });
+    await CnxMongoDB.db.collection("eventos").deleteOne({
+      _id: new ObjectId(idEvento),
+      idUsuarioCreador: new ObjectId(idUsuario),
+    });
 
     const eventos = await this.obtenerEventosUsuario(idUsuario);
 

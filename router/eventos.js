@@ -11,6 +11,7 @@ class Router {
 
     start() {
         this.router.get('/', validarToken, this.controlador.obtenerEventos)
+        this.router.get('/intereses', validarToken, this.controlador.obtenerEventosInteresados)
         this.router.get('/uno/:id', validarToken, this.controlador.obtenerEventoUsuario)
         this.router.get('/varios', validarToken, this.controlador.obtenerEventosUsuario)
         this.router.get('/clima/:id', validarToken, this.controlador.obtenerClima)
