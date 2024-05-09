@@ -47,6 +47,11 @@ class Servicio {
     );
     return { token };
   };
+
+  obtenerUsuario = async (id) => {
+    const usuario = await this.model.obtenerUsuarioPorId(id);
+    return usuario;
+  };
 }
 
 export default Servicio;

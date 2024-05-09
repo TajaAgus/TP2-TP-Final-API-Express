@@ -10,12 +10,11 @@ class Controlador {
     try {
       const usuarioGuardado = await this.servicio.registrarUsuario(usuario);
       if (usuarioGuardado.error) {
-        return res.status(400).json(usuarioGuardado)
+        return res.status(400).json(usuarioGuardado);
       }
       res.json(usuarioGuardado);
-    }
-    catch (error) {
-      res.status(500).json({ error: error.message })
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   };
 
@@ -26,6 +25,16 @@ class Controlador {
       return res.status(401).json(usuarioLogueado);
     }
     res.json(usuarioLogueado);
+  };
+
+  obtenerUsuario = async (req, res) => {
+    const { id } = req.params;
+    const idUsuario = req.usuario.id;
+    if (id != idUsuario) {
+      return res.status(401).json({ error: "Acceso denegado" });
+    }
+    const usuario = await this.servicio.obtenerUsuario(id);
+    res.json(usuario);
   };
 }
 

@@ -1,5 +1,6 @@
 import express from 'express'
 import Controlador from '../controlador/usuarios.js'
+import validarToken from '../middleware/validarToken.js'
 
 
 class Router {
@@ -11,6 +12,7 @@ class Router {
     start() {
         this.router.post('/registrar', this.controlador.registrarUsuario)
         this.router.post('/login', this.controlador.loginUsuario)
+        this.router.get('/:id', validarToken, this.controlador.obtenerUsuario)
         return this.router
     }
 }
