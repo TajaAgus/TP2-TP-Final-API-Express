@@ -1,7 +1,10 @@
 import ModelMongoDB from "../model/DAO/usuariosMongoDB.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { registrarUsuario } from "./validaciones/usuarios.js";
+import {
+  actualizarUsuario,
+  registrarUsuario,
+} from "./validaciones/usuarios.js";
 
 class Servicio {
   constructor() {
@@ -51,6 +54,20 @@ class Servicio {
   obtenerUsuario = async (id) => {
     const usuario = await this.model.obtenerUsuarioPorId(id);
     return usuario;
+  };
+
+  actualizarUsuario = async (idUsuario, usuario) => {
+    const res = actualizarUsuario(usuario);
+    if (res.result) {
+      const usuarioActualizado = await this.model.actualizarUsuario(
+        idUsuario,
+        usuario
+      );
+      return usuarioActualizado;
+    } else {
+      console.log(res.error);
+      throw res.error;
+    }
   };
 }
 

@@ -36,6 +36,24 @@ class Controlador {
     const usuario = await this.servicio.obtenerUsuario(id);
     res.json(usuario);
   };
+
+  actualizarUsuario = async (req, res) => {
+    const { id } = req.params;
+    const idUsuario = req.usuario.id;
+    if (id != idUsuario) {
+      return res.status(401).json({ error: "Acceso denegado" });
+    }
+    const usuario = req.body;
+    try {
+      const usuarioActualizado = await this.servicio.actualizarUsuario(
+        idUsuario,
+        usuario
+      );
+      res.json(usuarioActualizado);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 }
 
 export default Controlador;

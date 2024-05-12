@@ -25,6 +25,17 @@ class ModelMongoDB {
     return usuario;
   };
 
+  actualizarUsuario = async (idUsuario, usuario) => {
+    if (!CnxMongoDB.connection) return {};
+
+    await CnxMongoDB.db
+      .collection("usuarios")
+      .updateOne({ _id: new ObjectId(idUsuario) }, { $set: usuario });
+
+    const usuarioActualizado = await this.obtenerUsuarioPorId(idUsuario);
+    return usuarioActualizado;
+  };
+
   guardarEventoCreado = async (id, idEvento) => {
     if (!CnxMongoDB.connection) return {};
 
