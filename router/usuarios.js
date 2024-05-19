@@ -12,7 +12,8 @@ class Router {
     start() {
         this.router.post('/registrar', this.controlador.registrarUsuario)
         this.router.post('/login', this.controlador.loginUsuario)
-        this.router.get('/:id', validarToken, this.controlador.obtenerUsuario)
+        this.router.get('/', validarToken, this.controlador.obtenerUsuario)
+        this.router.get('/:id', validarToken, this.controlador.obtenerUsuarioPorId)
         this.router.put('/:id', validarToken, this.controlador.actualizarUsuario)
         return this.router
     }

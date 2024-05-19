@@ -28,12 +28,13 @@ class Controlador {
   };
 
   obtenerUsuario = async (req, res) => {
-    const { id } = req.params;
-    const idUsuario = req.usuario.id;
-    if (id != idUsuario) {
-      return res.status(401).json({ error: "Acceso denegado" });
-    }
-    const usuario = await this.servicio.obtenerUsuario(id);
+    const token = req.header("Authorization").replace("Bearer ", "");
+    const usuario = await this.servicio.obtenerUsuario(req.usuario.id);
+    res.json({token, usuario});
+  };
+
+  obtenerUsuarioPorId = async (req, res) => {
+    const usuario = await this.servicio.obtenerUsuario(req.params.id);
     res.json(usuario);
   };
 
