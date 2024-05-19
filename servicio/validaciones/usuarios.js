@@ -5,7 +5,6 @@ export const registrarUsuario = (usuario) => {
     mail: Joi.string().email().required(),
     password: Joi.string().min(8).max(48).required(),
     username: Joi.string().min(4).required(),
-    imageUrl: Joi.string().uri().required(),
     intereses: Joi.array().required(),
   });
 
