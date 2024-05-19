@@ -2,6 +2,18 @@ import { ObjectId } from "mongodb";
 import CnxMongoDB from "../DBMongo.js";
 
 class ModelMongoDB {
+  obtenerEvento= async (idEvento) => {
+    if (!CnxMongoDB.connection) return {};
+
+    const evento = await CnxMongoDB.db.collection("eventos").findOne({_id: new ObjectId(idEvento)});
+
+    if (!evento) {
+      return null;
+    }
+
+    return evento;
+  };
+
   obtenerEventoUsuario = async (idEvento, idUsuario) => {
     if (!CnxMongoDB.connection) return {};
 
@@ -18,6 +30,7 @@ class ModelMongoDB {
 
     return evento;
   };
+  
 
   obtenerEventosUsuario = async (idUsuario) => {
     if (!CnxMongoDB.connection) return {};

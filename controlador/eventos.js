@@ -6,6 +6,12 @@ class Controlador {
     this.servicio = new Servicio();
   }
 
+  obtenerEvento = async (req, res) => {
+    const {id: idEvento} = req.params;
+    const eventos = await this.servicio.obtenerEvento(idEvento);
+    res.json(eventos);
+  };
+
   obtenerEventoUsuario = async (req, res) => {
     const idUsuario = req.usuario.id;
     const {id: idEvento} = req.params;

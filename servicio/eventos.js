@@ -13,6 +13,12 @@ class Servicio {
     this.modelUsuario = new ModelMongoDBUsuario();
   }
 
+  obtenerEvento = async (idEvento) => {
+    const evento = await this.modelEvento.obtenerEvento(idEvento);
+    return evento;
+  };
+
+
   obtenerEventoUsuario = async (idUsuario, idEvento) => {
     const evento = await this.modelEvento.obtenerEventoUsuario(
       idEvento,
