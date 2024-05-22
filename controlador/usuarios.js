@@ -34,7 +34,7 @@ class Controlador {
   };
 
   obtenerUsuarioPorId = async (req, res) => {
-    const usuario = await this.servicio.obtenerUsuario(req.usuario.id);
+    const usuario = await this.servicio.obtenerUsuario(req.params.id);
     res.json(usuario);
   };
 
