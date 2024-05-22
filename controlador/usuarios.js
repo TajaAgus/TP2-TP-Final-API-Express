@@ -34,16 +34,12 @@ class Controlador {
   };
 
   obtenerUsuarioPorId = async (req, res) => {
-    const usuario = await this.servicio.obtenerUsuario(req.params.id);
+    const usuario = await this.servicio.obtenerUsuario(req.usuario.id);
     res.json(usuario);
   };
 
   actualizarUsuario = async (req, res) => {
-    const { id } = req.params;
     const idUsuario = req.usuario.id;
-    if (id != idUsuario) {
-      return res.status(401).json({ error: "Acceso denegado" });
-    }
     const usuario = req.body;
     try {
       const usuarioActualizado = await this.servicio.actualizarUsuario(
