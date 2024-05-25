@@ -10,6 +10,7 @@ export const validarCrearEvento = (evento) => {
     descripcion: Joi.string().min(4).max(200).required(),
     idUsuarioCreador: Joi.string().alphanum().required(),
     suscriptores: Joi.array().required(),
+    imagenUrl: Joi.string().uri(),
   });
 
   const { error } = eventoSchema.validate(evento);
@@ -30,6 +31,7 @@ export const validarActualizarEvento = (evento) => {
     descripcion: Joi.string().min(4).max(200),
     idUsuarioCreador: Joi.string().alphanum(),
     suscriptores: Joi.array(),
+    imagenUrl: Joi.string().uri(),
   });
 
   const { error } = eventoSchema.validate(evento);
