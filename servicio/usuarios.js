@@ -49,14 +49,12 @@ class Servicio {
     );
 
     delete usuarioLogueado.password
-    delete usuarioLogueado._id
 
     return { token, usuario: usuarioLogueado };
   };
 
   obtenerUsuario = async (id) => {
     const usuario = await this.model.obtenerUsuarioPorId(id);
-    delete usuario._id
     delete usuario.password
     return usuario;
   };
