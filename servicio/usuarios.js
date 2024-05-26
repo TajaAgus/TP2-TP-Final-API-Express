@@ -16,12 +16,14 @@ class Servicio {
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(usuario.password, salt);
     usuario.password = password;
+    console.log("tratando de guardar un usuario")
     if (res.result) {
       const emailExiste = await this.model.obtenerUsuarioPorMail(usuario.mail);
       if (emailExiste) {
         return { error: "Ya existe un usuario con este mail" };
       }
       const usuarioGuardado = await this.model.registrarUsuario(usuario);
+      console.log(usuarioGuardado);
       return { mensaje: "Usuario registrado correctamente" };
     } else {
       console.log(res.error);
