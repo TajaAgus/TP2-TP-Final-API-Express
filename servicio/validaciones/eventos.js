@@ -10,7 +10,7 @@ export const validarCrearEvento = (evento) => {
     descripcion: Joi.string().min(4).max(200).required(),
     idUsuarioCreador: Joi.string().alphanum().required(),
     suscriptores: Joi.array().required(),
-    imagenUrl: Joi.string().uri(),
+    imagenUrl: Joi.string().uri().empty(),
   });
 
   const { error } = eventoSchema.validate(evento);

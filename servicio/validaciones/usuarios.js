@@ -3,6 +3,8 @@ import Joi from "joi";
 export const registrarUsuario = (usuario) => {
   const usuarioSchema = Joi.object({
     mail: Joi.string().email().required(),
+    nombre: Joi.string(),
+    apellido: Joi.string(),
     password: Joi.string().min(8).max(48).required(),
     username: Joi.string().min(4).required(),
     edad: Joi.number().integer().min(0).max(99).required(),
