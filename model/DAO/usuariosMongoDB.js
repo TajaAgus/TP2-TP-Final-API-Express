@@ -68,6 +68,17 @@ class ModelMongoDB {
         { $pull: { eventosSuscriptos: new ObjectId(idEvento) } }
       );
   };
+
+  eliminarEventoCreado = async (id, idEvento) => {
+    if (!CnxMongoDB.connection) return {};
+
+    await CnxMongoDB.db
+      .collection("usuarios")
+      .updateOne(
+        { _id: new ObjectId(id) },
+        { $pull: { eventosCreados: new ObjectId(idEvento) } }
+      );
+  };
 }
 
 export default ModelMongoDB;

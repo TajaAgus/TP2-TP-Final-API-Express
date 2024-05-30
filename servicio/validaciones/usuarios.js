@@ -9,7 +9,7 @@ export const registrarUsuario = (usuario) => {
     username: Joi.string().min(4).required(),
     edad: Joi.number().integer().min(0).max(99).required(),
     intereses: Joi.array().required(),
-    imageUrl: Joi.string().uri().allow('')
+    imageUrl: Joi.string().uri().allow(""),
   });
 
   const { error } = usuarioSchema.validate(usuario);
@@ -24,7 +24,7 @@ export const actualizarUsuario = (usuario) => {
     mail: Joi.string().email(),
     password: Joi.string().min(8).max(48),
     username: Joi.string().min(4),
-    imagenUrl: Joi.string().uri(),
+    imageUrl: Joi.string().uri(),
     intereses: Joi.array(),
   });
 

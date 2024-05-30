@@ -18,7 +18,6 @@ class Servicio {
     return evento;
   };
 
-
   obtenerEventoUsuario = async (idUsuario, idEvento) => {
     const evento = await this.modelEvento.obtenerEventoUsuario(
       idEvento,
@@ -130,6 +129,11 @@ class Servicio {
   };
 
   borrarEvento = async (idEvento, idUsuario) => {
+    const evento = await this.modelEvento.obtenerEvento(idEvento);
+    for (let idSuscriptor of evento.suscriptores) {
+      await this.modelUsuario.eliminarEventoSuscripto(idSuscriptor, idEvento);
+    }
+    await this.modelUsuario.eliminarEventoCreado(idUsuario, idEvento);
     const eventoBorrado = await this.modelEvento.borrarEvento(
       idEvento,
       idUsuario
