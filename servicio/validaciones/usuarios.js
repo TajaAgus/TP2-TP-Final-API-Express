@@ -22,10 +22,13 @@ export const registrarUsuario = (usuario) => {
 export const actualizarUsuario = (usuario) => {
   const usuarioSchema = Joi.object({
     mail: Joi.string().email(),
+    nombre: Joi.string(),
+    apellido: Joi.string(),
     password: Joi.string().min(8).max(48),
     username: Joi.string().min(4),
-    imageUrl: Joi.string().uri(),
+    edad: Joi.number().integer().min(0).max(99),
     intereses: Joi.array(),
+    imageUrl: Joi.string().uri().allow(""),
   });
 
   const { error } = usuarioSchema.validate(usuario);
