@@ -9,6 +9,7 @@ export const registrarUsuario = (usuario) => {
     username: Joi.string().min(4).required(),
     edad: Joi.number().integer().min(0).max(99).required(),
     intereses: Joi.array().required(),
+    telefono: Joi.string().required(),
     imageUrl: Joi.string().uri().allow(""),
   });
 
